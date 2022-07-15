@@ -3,22 +3,36 @@ package com.ironhack;
 import com.ironhack.characters.Character;
 import com.ironhack.characters.Warrior;
 import com.ironhack.characters.Wizard;
-import java.util.ArrayList;
+import net.datafaker.Faker;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 
 
 public class Party {
 
-    private ArrayList<Character> members = new ArrayList<Character>();
+    private String name = Faker.instance().team().name().replace(" ", "-").replace(".","");
 
+    private final List<Character> members = new ArrayList<Character>();
 
-    public Party() {}
+    public String getName() {
+        return name;
+    }
 
-    public ArrayList<Character> getMembers() {
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public Party() {
+    }
+
+    public List<Character> getMembers() {
         return members;
     }
 
     public void addCharacter(Character member) {
+
         for (Character character : members) {
             if (character.getName().equals(member.getName())) {
                 member.setName(member.getName() + Character.SUFFIX_NAME);
@@ -28,9 +42,9 @@ public class Party {
         members.add(member);
     }
 
-    public void membersParty() {
+    public void partyMembers() {
         for (Character member : members) {
-            System.out.println(member.getName());
+            System.out.println(member.toString());
         }
     }
 
@@ -38,20 +52,39 @@ public class Party {
         members.remove(member);
     }
 
+    @Override
+    public String toString() {
+        final StringBuffer sb = new StringBuffer("Party named %s - has ".formatted(getName()));
+        var warriors = 0;
+        var wizards = 0;
+        for (Character member : members) {
+            if(member instanceof Wizard) {
+                wizards++;
+            }else if(member instanceof Warrior) {
+                warriors++;
+            }
+        }
+        sb.append(warriors).append(" warriors and ").append(wizards).append(" wizards in it");
+        return sb.toString();
+    }
 
-    public static void test() {
-        Party party = new Party();
+    public static Party getRandomParty() {
+        var randomParty = new Party();
+        final int WARRIOR = 1;
+        Random random = new Random();
+        var numberOfMembers = random.nextInt(3,5);
 
-        Character Merlin = new Wizard("Merlin", 3, 1, true, 500, 100);
-        Character VatoLoco = new Warrior("Vato Loco", 3, 200, true, 500, 100);
-        Character VatoLoco2 = new Warrior("Vato Loco", 3, 200, true, 500, 100);
+        for (int i = 0; i < numberOfMembers; i++) {
+            int randomValue = random.nextInt(1, 3);
+            if (randomValue == WARRIOR) {
+                randomParty.addCharacter(Warrior.generateRandom());
+            } else {
+                randomParty.addCharacter(Wizard.generateRandom());
+            }
+        }
 
-        party.addCharacter(Merlin);
-        party.addCharacter(VatoLoco);
-        party.membersParty();
-        party.removeMember(VatoLoco2);
-
-        party.membersParty();
-
+        return randomParty;
     }
 }
+
+

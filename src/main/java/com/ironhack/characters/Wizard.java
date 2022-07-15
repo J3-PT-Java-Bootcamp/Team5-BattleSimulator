@@ -6,13 +6,7 @@ import java.util.Random;
 
 public class Wizard extends Character{
 
-    public static final int MANA_ATTACK_THRESHOLD = 5;
-    public static final int FIREBALL_MANA_USAGE = -5;
-    public static final int STAFF_HIT_MANA_USAGE = 1;
-    public static final double STAFF_HIT_DAMAGE = 2;
-
-    private int mana;
-    private int intelligence;
+    // random generator constants
     private static final int MINIMUM_HP = 50;
     private static final int MAXIMUM_HP = 100;
     private static final int MINIMUM_INTELLIGENCE = 1;
@@ -20,8 +14,17 @@ public class Wizard extends Character{
     private static final int MINIMUM_MANA = 10;
     private static final int MAXIMUM_MANA = 50;
 
-    public Wizard(String name, String id, double hp, boolean isAlive, int mana, int intelligence) {
-        super(name, id, hp, isAlive);
+    // attack constants
+    public static final int MANA_ATTACK_THRESHOLD = 5;
+    public static final int FIREBALL_MANA_USAGE = -5;
+    public static final int STAFF_HIT_MANA_USAGE = 1;
+    public static final double STAFF_HIT_DAMAGE = 2;
+
+    private int mana;
+    private int intelligence;
+
+    public Wizard(String name, String id, double hp,  int mana, int intelligence) {
+        super(name, hp);
         setMana(mana);
         setIntelligence(intelligence);
     }
@@ -64,13 +67,23 @@ public class Wizard extends Character{
 
         var randomName = faker.name().firstName();
         var randomId = Character.generateId();
-        var randomIsAlive = random.nextBoolean();
         var randomHp = (Math.floor(random.nextDouble(MINIMUM_HP , MAXIMUM_HP) * 100 / 100));
         var mana = random.nextInt(MINIMUM_MANA,MAXIMUM_MANA);
         var intelligence = random.nextInt(MINIMUM_INTELLIGENCE,MAXIMUM_INTELLIGENCE);
 
-        return new Wizard(randomName, randomId, randomHp, randomIsAlive, mana, intelligence);
+        return new Wizard(randomName, randomId, randomHp, mana, intelligence);
 
     }
 
+    @Override
+    public String toString() {
+        return "Wizard{" +
+                "name= " + name + '\'' +
+                ", id= " + id + '\'' +
+                ", hp= " + hp +
+                ", isAlive= " + alive +
+                ", mana= " + mana +
+                ", intelligence= " + intelligence +
+                '}' + "\n";
+    }
 }

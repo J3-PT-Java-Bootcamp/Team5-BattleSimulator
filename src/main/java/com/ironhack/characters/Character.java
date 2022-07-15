@@ -1,23 +1,24 @@
 package com.ironhack.characters;
 
-import net.datafaker.Faker;
-
-import java.util.Random;
+import java.util.Objects;
 import java.util.UUID;
 
-public abstract class Character {
+public abstract class Character implements Attacker {
+
+    public static final int HEALTH_DEATH_THRESHOLD = 0;
+    public static final String SUFFIX_NAME = " Jr";
+
     protected String name;
     protected String id;
     protected double hp;
-    protected boolean isAlive;
+    protected boolean alive;
 
-    public static final String SUFFIX_NAME = " Jr";
     
-    public Character(String name, String id, double hp, boolean isAlive) {
-        setId(id);
+    public Character(String name, double hp) {
+        setId(Character.generateId());
         setName(name);
         setHp(hp);
-        setAlive(isAlive);
+        setAlive(hp > HEALTH_DEATH_THRESHOLD);
     }
 
     public String getName() {
@@ -42,19 +43,20 @@ public abstract class Character {
     }
 
     public void setHp(double hp) {
-        this.hp = hp;
+        this.hp = hp > HEALTH_DEATH_THRESHOLD ? hp : HEALTH_DEATH_THRESHOLD;
+        if(this.hp <= HEALTH_DEATH_THRESHOLD) setAlive(false);
     }
 
-    public boolean getIsAlive() {
-        return isAlive;
+    public boolean isAlive() {
+        return alive;
     }
 
     public void setAlive(boolean alive) {
-        isAlive = alive;
+        this.alive = alive;
     }
 
     public abstract double attack();
-    
+
     public static String generateId() {
         return UUID.randomUUID().toString();
     }
@@ -65,7 +67,20 @@ public abstract class Character {
                 "name='" + name + '\'' +
                 ", id='" + id + '\'' +
                 ", hp=" + hp +
-                ", isAlive=" + isAlive +
+                ", isAlive=" + alive +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Character character = (Character) o;
+        return id.equals(character.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }
